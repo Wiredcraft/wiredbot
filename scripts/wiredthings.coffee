@@ -28,13 +28,17 @@ module.exports = (robot) ->
 
     # .
     robot.hear /lunch/i, (msg) ->
+        day = (new Date).getDay()
         hours = (new Date).getHours()
 
-        if hours <= 11
-            msg.send '11'
-        if 11 < hours <= 12
-            msg.send '12'
-        if 12 < hours <= 13
-            msg.send '13'
-        if hours > 13
-            msg.send 'too late'
+        if day < 5
+            msg.send 'Free is the best'
+        else
+            if hours <= 11
+                msg.send 'When did you eat you breakfast?'
+            if 11 < hours <= 12
+                msg.send 'Do you want a cup of coffee?'
+            if 12 < hours <= 13
+                msg.send 'Call Christine...'
+            if hours > 13
+                msg.send 'Perfect time'
