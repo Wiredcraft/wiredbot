@@ -23,6 +23,11 @@
     "wwwdude": "~0.1.0"
   },
 
+  "devDependencies": {
+    "grunt": "~0.3.17",
+    "grunt-coffeelint": "~0.0.3"
+  },
+
   "engines": {
     "node": "0.6.x",
     "npm": "1.0.x"
