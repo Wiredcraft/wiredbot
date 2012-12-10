@@ -134,7 +134,7 @@ module.exports = (robot) ->
 
   # To forget
   # forget me/<user>
-  robot.respond /forget(\ )+(\w+)/i, (res) ->
+  robot.respond /forget(\ )+(\w+)$/i, (res) ->
     rawUser = res.match[2].trim()
 
     if rawUser is 'me' then user = res.message.user.name else user = rawUser
@@ -158,7 +158,7 @@ module.exports = (robot) ->
 
   # To recall
   # recall me/<user>
-  robot.respond /recall(\ )+(\w+)/i, (res) ->
+  robot.respond /recall(\ )+(\w+)$/i, (res) ->
     rawUser = res.match[2].trim()
     if rawUser is 'me' then user = res.message.user.name else user = rawUser
 

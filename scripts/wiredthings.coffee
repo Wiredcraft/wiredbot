@@ -18,6 +18,15 @@
 
 module.exports = (robot) ->
     # .
+    robot.respond /thank|awsome/i, (res) ->
+        res.reply 'You are welcome'
+
+    robot.respond /awesome/i, (res) ->
+        res.reply 'Thanks, but I am not that smater as you might think of...'
+
+    robot.hear /stupid/i, (res) ->
+        res.send 'Which are more supid? Human ro robots?'
+    # .
     robot.hear /(leave|leaving|bye)/i, (res) ->
         hours = (new Date).getHours()
 
