@@ -10,12 +10,12 @@
 # Commands:
 #   hubot remember my <key> is <value>
 #   hubot remember <user>'s <key> is <value>
-#   hubot remember <key> of <user> is <value>
-#
+#   hubot remember the <key> of <user> is <value>
+#   hubot forget me | <user>
 #   hubot forget my <key>
-#   hubot recall <user>
+#   hubot recall me | <user>
 #   hubot recall my <key>
-#   hubot recall <key> of <user>
+#   hubot recall the <key> of <user>
 #
 # Author:
 #   wiredcraft
@@ -40,11 +40,23 @@ rememberProfile = (robot, res, user, rawKey, rawValue) ->
 
   res.finish()
 
-forgetProfile = (robot, res, user, rawKey) ->
+forgetProfile = (robot, res, user) ->
+  unless robot.brain.data.users[user]
+    res.send "Who is #{user}?"
+  unless robot.brain.data.users[user]['profile']
+    res.send "#{user} dose not has profile"
+  else
+    delete robot.brain.data.users[user]['profile']
+
+    res.send 'Why make me like human?'
+
+  res.finish()
+
+forgetProfileItem = (robot, res, user, rawKey) ->
   key = rawKey.trim().replace(/(\ )+/i, '-')
 
   unless robot.brain.data.users[user]
-    res.send "Who is ${user}?"
+    res.send "Who is #{user}?"
   unless robot.brain.data.users[user]['profile']
     res.send "#{user} dose not has profile"
   else
@@ -67,7 +79,8 @@ recallProfile = (robot, res, user) ->
     response = "Profiles:\n"
 
     for key, value of profile
-      response += "#{key} is #{value}\n"
+      rawKey = key.replace(/-/i, ' ')
+      response += "#{rawKey} is #{value}\n"
 
     res.send response
 
@@ -87,7 +100,7 @@ recallProfileItem = (robot, res, user, rawKey) ->
     unless value
       res.send "#{user} dose not has #{key}"
     else
-      response = "#{key} is #{value}"
+      response = "#{rawKey} is #{value}"
       res.send response
 
   res.finish()
@@ -99,17 +112,16 @@ module.exports = (robot) ->
     rawKey = res.match[3]
     rawValue = res.match[6]
 
-    console.log '############## #'
     rememberProfile robot, res, user, rawKey, rawValue
 
-  robot.respond /remember(\ )+(\w+)'s(\ )+(.*)(\ )+is(\ )+(.*)$/i, (res) ->
+  robot.respond /remember(\ )+(\w+)'s(\ )+(.*)(\ )+is(\ )+(.*)/i, (res) ->
     user = res.match[2]
     rawKey = res.match[4]
     rawValue = res.match[7]
 
     rememberProfile robot, res, user, rawKey, rawValue
 
-  robot.respond /remember(\ )+(.*)(\ )+of(\ )+(\w+)(\ )+is(\ )+(.*)$/i, (res) ->
+  robot.respond /remember(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)(\ )+is(\ )+(.*)/i, (res) ->
     user = res.match[5]
     rawKey = res.match[2]
     rawValue = res.match[8]
@@ -118,16 +130,30 @@ module.exports = (robot) ->
 
 
   # To forget
-  robot.respond /forget(\ )+(.*)(\ )+of(\ )+(\w+)*$/i, (res) ->
+  robot.respond /forget(\ )+(\w+)/i, (res) ->
+    rawUser = res.match[2].trim()
+
+    if rawUser is 'me' then user = res.message.user.name else user = rawUser
+
+    forgetProfile robot, res, user
+
+  robot.respond /forget(\ )+my(.*)/i, (res) ->
+    user = res.message.user.name
+    rawKey = res.match[2]
+
+    forgetProfileItem robot, res, user, rawKey
+
+  robot.respond /forget(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)/i, (res) ->
     user = res.match[5]
     rawKey = res.match[2]
 
-    forgetProfile robot, res, user, rawKey
+    forgetProfileItem robot, res, user, rawKey
 
 
   # To recall
-  robot.respond /recall(\ )+(\w+)*$/i, (res) ->
-    user = res.match[2]
+  robot.respond /recall(\ )+(\w+)/i, (res) ->
+    rawUser = res.match[2].trim()
+    if rawUser is 'me' then user = res.message.user.name else user = rawUser
 
     recallProfile robot, res, user
 
@@ -137,7 +163,7 @@ module.exports = (robot) ->
 
     recallProfileItem robot, res, user, rawKey
 
-  robot.respond /recall(\ )+(.*)(\ )+of(\ )+(\w+)*$/i, (res) ->
+  robot.respond /recall(\ )+(.*)(\ )+of(\ )+(\w+)/i, (res) ->
     user = res.match[5]
     rawKey = res.match[2]
 
