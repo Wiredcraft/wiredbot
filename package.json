@@ -19,7 +19,8 @@
     "redis": "~0.7.2",
     "hubot-xmpp": "0.1.0",
     "hubot-scripts": "git://github.com/Wiredcraft/hubot-scripts.git",
-    "optparse": "1.0.3"
+    "optparse": "1.0.3",
+    "wwwdude": "~0.1.0"
   },
 
   "engines": {
