@@ -32,56 +32,56 @@ module.exports = function(grunt) {
       tasks: 'default'
     },
     coffeelintOptions: {
-      'no_tabs' : {
-        'level' : 'error'
+      'no_tabs': {
+        'level': 'error'
       },
 
-      'no_trailing_whitespace' : {
-        'level' : 'error'
+      'no_trailing_whitespace': {
+        'level': 'error'
       },
 
-      'max_line_length' : {
+      'max_line_length': {
         'value': 9999,
-        'level' : 'warn'
+        'level': 'warn'
       },
 
-      'camel_case_classes' : {
-        'level' : 'error'
+      'camel_case_classes': {
+        'level': 'error'
       },
 
-      'indentation' : {
-        'value' : 2,
-        'level' : 'error'
+      'indentation': {
+        'value': 2,
+        'level': 'error'
       },
 
-      'no_implicit_braces' : {
-        'level' : 'ignore'
+      'no_implicit_braces': {
+        'level': 'ignore'
       },
 
-      'no_trailing_semicolons' : {
-        'level' : 'error'
+      'no_trailing_semicolons': {
+        'level': 'error'
       },
 
-      'no_plusplus' : {
-        'level' : 'ignore'
+      'no_plusplus': {
+        'level': 'ignore'
       },
 
-      'no_throwing_strings' : {
-        'level' : 'error'
+      'no_throwing_strings': {
+        'level': 'error'
       },
 
-      'cyclomatic_complexity' : {
-        'value' : 11,
-        'level' : 'ignore'
+      'cyclomatic_complexity': {
+        'value': 11,
+        'level': 'ignore'
       },
 
-      'line_endings' : {
-        'value' : 'unix',
-        'level' : 'ignore'
+      'line_endings': {
+        'value': 'unix',
+        'level': 'ignore'
       },
 
-      'no_implicit_parens' : {
-        'level' : 'ignore'
+      'no_implicit_parens': {
+        'level': 'ignore'
       }
 
     },
@@ -103,14 +103,21 @@ module.exports = function(grunt) {
           }
         }
       }
+    },
+    docco: {
+      app: {
+        src: ['./scripts/profile.coffee', './scripts/consciousness.coffee',
+              './scripts/wiredcraft.coffee', './scripts/wiredthings.coffee']
+      }
     }
   });
 
   //
+  grunt.loadNpmTasks('grunt-docco');
   grunt.loadNpmTasks('grunt-coffeelint');
   grunt.loadNpmTasks('grunt-simple-mocha');
 
   // Default task.
-  grunt.registerTask('default', 'coffeelint');
+  grunt.registerTask('default', 'coffeelint docco');
 
 };

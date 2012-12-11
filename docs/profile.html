@@ -1,0 +1,173 @@
+<!DOCTYPE html>  <html> <head>   <title>profile.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="consciousness.html">                 consciousness.coffee               </a>                                           <a class="source" href="profile.html">                 profile.coffee               </a>                                           <a class="source" href="wiredcraft.html">                 wiredcraft.coffee               </a>                                           <a class="source" href="wiredthings.html">                 wiredthings.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               profile.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>Description
+  Store personal profile in hubot's brain, then later we can use it.</p>
+
+<p>Dependencies:
+  None</p>
+
+<p>Configuration:
+  None</p>
+
+<p>Commands:
+  hubot remember my <key> is <value>
+  hubot remember <user>'s <key> is <value>
+  hubot remember the <key> of <user> is <value>
+  hubot forget me | <user>
+  hubot forget my <key>
+  hubot recall me | <user>
+  hubot recall my <key>
+  hubot recall the <key> of <user></p>
+
+<p>Author:
+  wiredcraft</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">Util</span> <span class="o">=</span> <span class="nx">require</span> <span class="s1">&#39;util&#39;</span>
+
+<span class="nx">_rememberProfileItem</span> <span class="o">=</span> <span class="p">(</span><span class="nx">robot</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">user</span><span class="p">,</span> <span class="nx">rawKey</span><span class="p">,</span> <span class="nx">rawValue</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="nx">key</span> <span class="o">=</span> <span class="nx">rawKey</span><span class="p">.</span><span class="nx">trim</span><span class="p">().</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(\ )+/</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
+  <span class="nx">value</span> <span class="o">=</span> <span class="nx">rawValue</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span>
+  <span class="nx">users</span> <span class="o">=</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span>
+
+  <span class="nx">unless</span> <span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">]</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;Who is #{user}?&quot;</span>
+  <span class="k">else</span>
+    <span class="nx">profile</span> <span class="o">=</span> <span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span> <span class="o">or</span> <span class="p">{}</span>
+    <span class="nx">profile</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span>
+
+    <span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">profile</span>
+    <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span> <span class="o">=</span> <span class="nx">users</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">reply</span> <span class="s2">&quot;Ok, #{rawKey} of #{user} is #{rawValue}&quot;</span>
+
+  <span class="nx">res</span><span class="p">.</span><span class="nx">finish</span><span class="p">()</span>
+
+<span class="nx">_forgetProfile</span> <span class="o">=</span> <span class="p">(</span><span class="nx">robot</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">user</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="nx">unless</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">]</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;Who is #{user}?&quot;</span>
+  <span class="nx">unless</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;#{user} dose not has profile&quot;</span>
+  <span class="k">else</span>
+    <span class="k">delete</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s1">&#39;Why make me like human?&#39;</span>
+
+  <span class="nx">res</span><span class="p">.</span><span class="nx">finish</span><span class="p">()</span>
+
+<span class="nx">_forgetProfileItem</span> <span class="o">=</span> <span class="p">(</span><span class="nx">robot</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">user</span><span class="p">,</span> <span class="nx">rawKey</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="nx">key</span> <span class="o">=</span> <span class="nx">rawKey</span><span class="p">.</span><span class="nx">trim</span><span class="p">().</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(\ )+/i</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+  <span class="nx">unless</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">]</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;Who is #{user}?&quot;</span>
+  <span class="nx">unless</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;#{user} dose not has profile&quot;</span>
+  <span class="k">else</span>
+    <span class="nx">profile</span> <span class="o">=</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
+
+    <span class="k">delete</span> <span class="nx">profile</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+    <span class="k">delete</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span> <span class="nx">unless</span> <span class="nx">profile</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s1">&#39;Why make me like human?&#39;</span>
+
+  <span class="nx">res</span><span class="p">.</span><span class="nx">finish</span><span class="p">()</span>
+
+<span class="nx">_recallProfile</span> <span class="o">=</span> <span class="p">(</span><span class="nx">robot</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">user</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="nx">unless</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">]</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;Who is #{user}?&quot;</span>
+  <span class="nx">unless</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;#{user} dose not has profile&quot;</span>
+  <span class="k">else</span>
+    <span class="nx">profile</span> <span class="o">=</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
+    <span class="nx">response</span> <span class="o">=</span> <span class="s2">&quot;Profile:\n&quot;</span>
+
+    <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">profile</span>
+      <span class="nx">rawKey</span> <span class="o">=</span> <span class="nx">key</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/-/i</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+      <span class="nx">response</span> <span class="o">+=</span> <span class="s2">&quot;#{rawKey} is #{value}\n&quot;</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="nx">response</span>
+
+  <span class="nx">res</span><span class="p">.</span><span class="nx">finish</span><span class="p">()</span>
+
+<span class="nx">_recallProfileItem</span> <span class="o">=</span> <span class="p">(</span><span class="nx">robot</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">user</span><span class="p">,</span> <span class="nx">rawKey</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="nx">key</span> <span class="o">=</span> <span class="nx">rawKey</span><span class="p">.</span><span class="nx">trim</span><span class="p">().</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(\ )+/i</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+  <span class="nx">unless</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">]</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;Who is #{user}?&quot;</span>
+  <span class="nx">unless</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;#{user} dose not has profile&quot;</span>
+  <span class="k">else</span>
+    <span class="nx">profile</span> <span class="o">=</span> <span class="nx">robot</span><span class="p">.</span><span class="nx">brain</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">users</span><span class="p">[</span><span class="nx">user</span><span class="p">][</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span>
+    <span class="nx">value</span> <span class="o">=</span> <span class="nx">profile</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+
+    <span class="nx">unless</span> <span class="nx">value</span>
+      <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="s2">&quot;#{user} dose not has #{key}&quot;</span>
+    <span class="k">else</span>
+      <span class="nx">response</span> <span class="o">=</span> <span class="s2">&quot;#{rawKey} is #{value}&quot;</span>
+      <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="nx">response</span>
+
+  <span class="nx">res</span><span class="p">.</span><span class="nx">finish</span><span class="p">()</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">(</span><span class="nx">robot</span><span class="p">)</span> <span class="o">-&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>To remember
+remember my <key> is <value></p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">robot</span><span class="p">.</span><span class="nx">respond</span> <span class="o">/</span><span class="nx">remember</span><span class="p">(</span><span class="err">\</span> <span class="p">)</span><span class="o">+</span><span class="nx">my</span><span class="p">(</span><span class="err">\</span> <span class="p">)</span><span class="o">+</span><span class="p">(.</span><span class="o">*</span><span class="p">)(</span><span class="err">\</span> <span class="p">)</span><span class="o">+is</span><span class="p">(</span><span class="err">\</span> <span class="p">)</span><span class="o">+</span><span class="p">(.</span><span class="o">*</span><span class="p">)</span><span class="o">/</span><span class="nx">i</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nx">user</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">message</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">name</span>
+    <span class="nx">rawKey</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">match</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="nx">rawValue</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">match</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+
+    <span class="nx">_rememberProfileItem</span> <span class="nx">robot</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">user</span><span class="p">,</span> <span class="nx">rawKey</span><span class="p">,</span> <span class="nx">rawValue</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>remember <user>'s <key> is <value></p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">robot</span><span class="p">.</span><span class="nx">respond</span> <span class="o">/</span><span class="nx">remember</span><span class="p">(</span><span class="err">\</span> <span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="err">\</span><span class="nx">w</span><span class="o">+</span><span class="p">)</span><span class="s1">&#39;s(\ )+(.*)(\ )+is(\ )+(.*)/i, (res) -&gt;</span>
+<span class="s1">    user = res.match[2]</span>
+<span class="s1">    rawKey = res.match[4]</span>
+<span class="s1">    rawValue = res.match[7]</span>
+
+<span class="s1">    _rememberProfileItem robot, res, user, rawKey, rawValue</span>
+
+
+<span class="s1">#DIVIDER</span>
+<span class="s1">  robot.respond /remember(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)(\ )+is(\ )+(.*)/i, (res) -&gt;</span>
+<span class="s1">    user = res.match[5]</span>
+<span class="s1">    rawKey = res.match[2]</span>
+<span class="s1">    rawValue = res.match[8]</span>
+
+<span class="s1">    _rememberProfileItem robot, res, user, rawKey, rawValue</span>
+
+
+
+<span class="s1">#DIVIDER</span>
+<span class="s1">  robot.respond /forget(\ )+(\w+)$/i, (res) -&gt;</span>
+<span class="s1">    rawUser = res.match[2].trim()</span>
+
+<span class="s1">    if rawUser is &#39;</span><span class="nx">me</span><span class="s1">&#39; then user = res.message.user.name else user = rawUser</span>
+
+<span class="s1">    _forgetProfile robot, res, user</span>
+
+
+<span class="s1">#DIVIDER</span>
+<span class="s1">  robot.respond /forget(\ )+my(.*)/i, (res) -&gt;</span>
+<span class="s1">    user = res.message.user.name</span>
+<span class="s1">    rawKey = res.match[2]</span>
+
+<span class="s1">    _forgetProfileItem robot, res, user, rawKey</span>
+
+
+<span class="s1">#DIVIDER</span>
+<span class="s1">  robot.respond /forget(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)/i, (res) -&gt;</span>
+<span class="s1">    user = res.match[5]</span>
+<span class="s1">    rawKey = res.match[2]</span>
+
+<span class="s1">    _forgetProfileItem robot, res, user, rawKey</span>
+
+
+
+<span class="s1">#DIVIDER</span>
+<span class="s1">  robot.respond /recall(\ )+(\w+)$/i, (res) -&gt;</span>
+<span class="s1">    rawUser = res.match[2].trim()</span>
+<span class="s1">    if rawUser is &#39;</span><span class="nx">me</span><span class="err">&#39;</span> <span class="k">then</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">message</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">name</span> <span class="k">else</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">rawUser</span>
+
+    <span class="nx">_recallProfile</span> <span class="nx">robot</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">user</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>remember the <key> of <user> is <value></p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">robot</span><span class="p">.</span><span class="nx">respond</span> <span class="o">/</span><span class="nx">recall</span><span class="p">(</span><span class="err">\</span> <span class="p">)</span><span class="o">+</span><span class="nx">my</span><span class="p">(.</span><span class="o">*</span><span class="p">)</span><span class="o">/</span><span class="nx">i</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nx">user</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">message</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">name</span>
+    <span class="nx">rawKey</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">match</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nx">_recallProfileItem</span> <span class="nx">robot</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">user</span><span class="p">,</span> <span class="nx">rawKey</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>To forget
+forget me/<user></p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">robot</span><span class="p">.</span><span class="nx">respond</span> <span class="o">/</span><span class="nx">recall</span><span class="p">(</span><span class="err">\</span> <span class="p">)</span><span class="o">+</span><span class="nx">the</span><span class="p">(</span><span class="err">\</span> <span class="p">)</span><span class="o">+</span><span class="p">(.</span><span class="o">*</span><span class="p">)(</span><span class="err">\</span> <span class="p">)</span><span class="o">+</span><span class="k">of</span><span class="p">(</span><span class="err">\</span> <span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="err">\</span><span class="nx">w</span><span class="o">+</span><span class="p">)</span><span class="o">/</span><span class="nx">i</span><span class="p">,</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nx">user</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">match</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+    <span class="nx">rawKey</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">match</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nx">_recallProfileItem</span> <span class="nx">robot</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">user</span><span class="p">,</span> <span class="nx">rawKey</span>
+
+</pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>forget my <key></p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>forget the <key> of <user></p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>To recall
+recall me/<user></p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>recall my <key></p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>recall the <key> of <user></p>             </td>             <td class="code">               <div class="highlight"><pre>undefined</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
