@@ -1,6 +1,9 @@
 # Description
 #   Store personal profile in hubot's brain, then later we can use it.
 #
+# Version
+#   0.1.0
+#
 # Dependencies:
 #   None
 #
