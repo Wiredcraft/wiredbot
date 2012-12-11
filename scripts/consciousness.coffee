@@ -27,7 +27,7 @@ module.exports = (robot) ->
     # Load a new script from scripts library.
     robot.respond /learn\ (\w+)*/i, (msg) ->
         name = msg.match[1].trim()
-        if Path.extname(name) then (sctrip = name) else (script = name + 'coffee')
+        script = if Path.extname(name) then name else name + 'coffee'
 
         scriptPath = Path.join SCRIPTS_LIB, script
 
