@@ -86,7 +86,8 @@ module.exports = function(grunt) {
 
     },
     coffeelint: {
-      app: ['./scripts/**/*.coffee']
+      app: ['./scripts/profile.coffee', './scripts/consciousness.coffee',
+            './scripts/wiredlife.coffee', './scripts/wiredthings.coffee']
     },
     simplemocha: {
       all: {
@@ -107,7 +108,7 @@ module.exports = function(grunt) {
     docco: {
       app: {
         src: ['./scripts/profile.coffee', './scripts/consciousness.coffee',
-              './scripts/wiredcraft.coffee', './scripts/wiredthings.coffee']
+              './scripts/wiredlife.coffee', './scripts/wiredthings.coffee']
       }
     }
   });

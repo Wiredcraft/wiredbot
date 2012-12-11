@@ -1,6 +1,9 @@
 # Description
 #   What well happen if hubot heard something within wiredcraft
 #
+# Version
+#    0.1.0a
+#
 # Dependencies:
 #   None
 #
@@ -16,18 +19,36 @@
 # Author:
 #   wiredcraft
 
+# ## Listeners
 module.exports = (robot) ->
-    # .
-    robot.respond /thank|awsome/i, (res) ->
+    # When someone praise.
+    robot.respond ///thank
+      | awesome
+      | great
+      | love
+      | helpfull
+      | smater
+      | excellent
+      | perfect
+      ///i, (res) ->
         res.reply 'You are welcome'
 
-    robot.respond /awesome/i, (res) ->
-        res.reply 'Thanks, but I am not that smater as you might think of...'
-
-    robot.hear /stupid/i, (res) ->
+    # When someone blame.
+    robot.respond ///stupid
+      | uesless
+      | bad
+      ///i, (res) ->
         res.send 'Which are more supid? Human ro robots?'
-    # .
-    robot.hear /(leave|leaving|bye)/i, (res) ->
+
+    # When someone leaving.
+    robot.hear ///leave
+      | leaving
+      | bye
+      | need to go
+      | must go
+      | must leave
+      | leave earilier
+      ///i, (res) ->
         hours = (new Date).getHours()
 
         if hours >= 18
@@ -35,8 +56,8 @@ module.exports = (robot) ->
         else
             res.reply 'Nooo, ronan will kill you!!!'
 
-    # .
-    robot.hear /lunch/i, (res) ->
+    # When someone is hungry.
+    robot.hear /^lunch/i, (res) ->
         day = (new Date).getDay()
         hours = (new Date).getHours()
 
@@ -52,7 +73,7 @@ module.exports = (robot) ->
             if hours >= 13
                 res.reply 'Perfect time'
 
-    # .
+    # When someone was forget who is she/he. .
     robot.respond /who am I/i, (res) ->
         user = res.message.user.name
 

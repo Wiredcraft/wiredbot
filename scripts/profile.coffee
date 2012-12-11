@@ -148,8 +148,7 @@ module.exports = (robot) ->
   # Pattern: `forget me/<user>`.
   robot.respond /forget[ ]+(\w+)$/i, (res) ->
     rawUser = res.match[1].trim()
-
-    if rawUser is "me" then user = res.message.user.name else user = rawUser
+    user = if rawUser is "me" then res.message.user.name else rawUser
 
     _forgetProfile robot, res, user
 
@@ -162,7 +161,7 @@ module.exports = (robot) ->
 
   # Pattern: `forget the <key> of <user>`
   robot.respond /forget[ ]+the[ ]+(.*)[ ]+of[ ]+(\w+)/i, (res) ->
-    rawKey = res.match[1]
+    rawKey = respond.match[1]
     user = res.match[2]
 
     _forgetProfileItem robot, res, user, rawKey
@@ -172,7 +171,7 @@ module.exports = (robot) ->
   # Pattern: `recall me/<user>`
   robot.respond /recall[ ]+(\w+)$/i, (res) ->
     rawUser = res.match[1].trim()
-    if rawUser is "me" then user = res.message.user.name else user = rawUser
+    user = if rawUser is "me" then res.message.user.name else rawUser
 
     _recallProfile robot, res, user
 
