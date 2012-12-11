@@ -28,7 +28,7 @@ module.exports = (robot) ->
       | awesome
       | great
       | love
-      | helpfull
+      | helpful
       | smarter
       | excellent
       | perfect
@@ -39,7 +39,7 @@ module.exports = (robot) ->
 
     # When someone blame.
     robot.respond /// (stupid
-      | uesless
+      | useless
       | bad
       | asshole
       | fuck
@@ -52,10 +52,10 @@ module.exports = (robot) ->
     robot.hear ///leave
       | leaving
       | bye
-      | need to go
-      | must go
-      | must leave
-      | leave earilier
+      | need[ ]+to[ ]+go
+      | must[ ]+go
+      | must[ ]+leave
+      | leave[ ]+earilier
       ///i, (res) ->
         hours = (new Date).getHours()
 
