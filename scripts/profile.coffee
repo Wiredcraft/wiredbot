@@ -22,6 +22,9 @@
 
 Util = require 'util'
 
+# ## Internal Functions
+
+# Remember one item of a user's profile
 _rememberProfileItem = (robot, res, user, rawKey, rawValue) ->
   key = rawKey.trim().replace(/(\ )+/, '-')
   value = rawValue.trim()
@@ -40,6 +43,7 @@ _rememberProfileItem = (robot, res, user, rawKey, rawValue) ->
 
   res.finish()
 
+# Forget the whole profile of a user
 _forgetProfile = (robot, res, user) ->
   unless robot.brain.data.users[user]
     res.send "Who is #{user}?"
@@ -52,6 +56,7 @@ _forgetProfile = (robot, res, user) ->
 
   res.finish()
 
+# Forgt one item from a user's profile
 _forgetProfileItem = (robot, res, user, rawKey) ->
   key = rawKey.trim().replace(/(\ )+/i, '-')
 
@@ -69,6 +74,7 @@ _forgetProfileItem = (robot, res, user, rawKey) ->
 
   res.finish()
 
+# Recall the whole profile of a user
 _recallProfile = (robot, res, user) ->
   unless robot.brain.data.users[user]
     res.send "Who is #{user}?"
@@ -76,7 +82,7 @@ _recallProfile = (robot, res, user) ->
     res.send "#{user} dose not has profile"
   else
     profile = robot.brain.data.users[user]['profile']
-    response = "Profile:\n"
+    response = "Profile of #{user}:\n"
 
     for key, value of profile
       rawKey = key.replace(/-/i, ' ')
@@ -86,6 +92,7 @@ _recallProfile = (robot, res, user) ->
 
   res.finish()
 
+# Recall one item for a user's profile
 _recallProfileItem = (robot, res, user, rawKey) ->
   key = rawKey.trim().replace(/(\ )+/i, '-')
 
@@ -105,9 +112,11 @@ _recallProfileItem = (robot, res, user, rawKey) ->
 
   res.finish()
 
+# ## Listeners
+
 module.exports = (robot) ->
-  # To remember
-  # remember my <key> is <value>
+  # ### To remember
+  # Pattern: `remember my <key> is <value>`.
   robot.respond /remember(\ )+my(\ )+(.*)(\ )+is(\ )+(.*)/i, (res) ->
     user = res.message.user.name
     rawKey = res.match[3]
@@ -115,7 +124,7 @@ module.exports = (robot) ->
 
     _rememberProfileItem robot, res, user, rawKey, rawValue
 
-  # remember <user>'s <key> is <value>
+  # Pattern: `remember <user>'s <key> is <value>`.
   robot.respond /remember(\ )+(\w+)'s(\ )+(.*)(\ )+is(\ )+(.*)/i, (res) ->
     user = res.match[2]
     rawKey = res.match[4]
@@ -123,7 +132,7 @@ module.exports = (robot) ->
 
     _rememberProfileItem robot, res, user, rawKey, rawValue
 
-  # remember the <key> of <user> is <value>
+  # Pattern: `remember the <key> of <user> is <value>`.
   robot.respond /remember(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)(\ )+is(\ )+(.*)/i, (res) ->
     user = res.match[5]
     rawKey = res.match[2]
@@ -132,8 +141,8 @@ module.exports = (robot) ->
     _rememberProfileItem robot, res, user, rawKey, rawValue
 
 
-  # To forget
-  # forget me/<user>
+  # ### To forget
+  # Pattern: `forget me/<user>`.
   robot.respond /forget(\ )+(\w+)$/i, (res) ->
     rawUser = res.match[2].trim()
 
@@ -141,14 +150,14 @@ module.exports = (robot) ->
 
     _forgetProfile robot, res, user
 
-  # forget my <key>
+  # Pattern: `forget my <key>`.
   robot.respond /forget(\ )+my(.*)/i, (res) ->
     user = res.message.user.name
     rawKey = res.match[2]
 
     _forgetProfileItem robot, res, user, rawKey
 
-  # forget the <key> of <user>
+  # Pattern: `forget the <key> of <user>`
   robot.respond /forget(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)/i, (res) ->
     user = res.match[5]
     rawKey = res.match[2]
@@ -156,22 +165,22 @@ module.exports = (robot) ->
     _forgetProfileItem robot, res, user, rawKey
 
 
-  # To recall
-  # recall me/<user>
+  # ### To recall
+  # Pattern: `recall me/<user>`
   robot.respond /recall(\ )+(\w+)$/i, (res) ->
     rawUser = res.match[2].trim()
     if rawUser is 'me' then user = res.message.user.name else user = rawUser
 
     _recallProfile robot, res, user
 
-  # recall my <key>
+  # Pattern: `recall my <key>`
   robot.respond /recall(\ )+my(.*)/i, (res) ->
     user = res.message.user.name
     rawKey = res.match[2]
 
     _recallProfileItem robot, res, user, rawKey
 
-  # recall the <key> of <user>
+  # Pattern: `recall the <key> of <user>`
   robot.respond /recall(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)/i, (res) ->
     user = res.match[5]
     rawKey = res.match[2]
