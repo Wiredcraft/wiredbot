@@ -29,7 +29,7 @@ Util = require 'util'
 
 # Remember one item of a user's profile
 _rememberProfileItem = (robot, res, user, rawKey, rawValue) ->
-  key = rawKey.trim().replace(/(\ )+/, '-')
+  key = rawKey.trim().replace(/[ ]+/, '-')
   value = rawValue.trim()
   users = robot.brain.data.users
 
@@ -61,7 +61,7 @@ _forgetProfile = (robot, res, user) ->
 
 # Forgt one item from a user's profile
 _forgetProfileItem = (robot, res, user, rawKey) ->
-  key = rawKey.trim().replace(/(\ )+/i, '-')
+  key = rawKey.trim().replace(/[ ]+/i, '-')
 
   unless robot.brain.data.users[user]
     res.send "Who is #{user}?"
@@ -97,7 +97,7 @@ _recallProfile = (robot, res, user) ->
 
 # Recall one item for a user's profile
 _recallProfileItem = (robot, res, user, rawKey) ->
-  key = rawKey.trim().replace(/(\ )+/i, '-')
+  key = rawKey.trim().replace(/[ ]+/i, '-')
 
   unless robot.brain.data.users[user]
     res.send "Who is #{user}?"
@@ -120,72 +120,72 @@ _recallProfileItem = (robot, res, user, rawKey) ->
 module.exports = (robot) ->
   # ### To remember
   # Pattern: `remember my <key> is <value>`.
-  robot.respond /remember(\ )+my(\ )+(.*)(\ )+is(\ )+(.*)/i, (res) ->
+  robot.respond /remember[ ]+my[ ]+(.*)[ ]+is[ ]+(.*)/i, (res) ->
     user = res.message.user.name
-    rawKey = res.match[3]
-    rawValue = res.match[6]
+    rawKey = res.match[1]
+    rawValue = res.match[2]
 
     _rememberProfileItem robot, res, user, rawKey, rawValue
 
   # Pattern: `remember <user>'s <key> is <value>`.
-  robot.respond /remember(\ )+(\w+)'s(\ )+(.*)(\ )+is(\ )+(.*)/i, (res) ->
-    user = res.match[2]
-    rawKey = res.match[4]
-    rawValue = res.match[7]
+  robot.respond /remember[ ]+(\w+)'s[ ]+(.*)[ ]+is[ ]+(.*)/i, (res) ->
+    user = res.match[1]
+    rawKey = res.match[2]
+    rawValue = res.match[3]
 
     _rememberProfileItem robot, res, user, rawKey, rawValue
 
   # Pattern: `remember the <key> of <user> is <value>`.
-  robot.respond /remember(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)(\ )+is(\ )+(.*)/i, (res) ->
-    user = res.match[5]
+  robot.respond /remember[ ]+the[ ]+(.*)[ ]+of[ ]+(\w+)[ ]+is[ ]+(.*)/i, (res) ->
+    user = res.match[1]
     rawKey = res.match[2]
-    rawValue = res.match[8]
+    rawValue = res.match[3]
 
     _rememberProfileItem robot, res, user, rawKey, rawValue
 
 
   # ### To forget
   # Pattern: `forget me/<user>`.
-  robot.respond /forget(\ )+(\w+)$/i, (res) ->
-    rawUser = res.match[2].trim()
+  robot.respond /forget[ ]+(\w+)$/i, (res) ->
+    rawUser = res.match[1].trim()
 
-    if rawUser is 'me' then user = res.message.user.name else user = rawUser
+    if rawUser is "me" then user = res.message.user.name else user = rawUser
 
     _forgetProfile robot, res, user
 
   # Pattern: `forget my <key>`.
-  robot.respond /forget(\ )+my(.*)/i, (res) ->
+  robot.respond /forget[ ]+my(.*)/i, (res) ->
     user = res.message.user.name
-    rawKey = res.match[2]
+    rawKey = res.match[1]
 
     _forgetProfileItem robot, res, user, rawKey
 
   # Pattern: `forget the <key> of <user>`
-  robot.respond /forget(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)/i, (res) ->
-    user = res.match[5]
-    rawKey = res.match[2]
+  robot.respond /forget[ ]+the[ ]+(.*)[ ]+of[ ]+(\w+)/i, (res) ->
+    rawKey = res.match[1]
+    user = res.match[2]
 
     _forgetProfileItem robot, res, user, rawKey
 
 
   # ### To recall
   # Pattern: `recall me/<user>`
-  robot.respond /recall(\ )+(\w+)$/i, (res) ->
-    rawUser = res.match[2].trim()
-    if rawUser is 'me' then user = res.message.user.name else user = rawUser
+  robot.respond /recall[ ]+(\w+)$/i, (res) ->
+    rawUser = res.match[1].trim()
+    if rawUser is "me" then user = res.message.user.name else user = rawUser
 
     _recallProfile robot, res, user
 
   # Pattern: `recall my <key>`
-  robot.respond /recall(\ )+my(.*)/i, (res) ->
+  robot.respond /recall[ ]+my(.*)/i, (res) ->
     user = res.message.user.name
-    rawKey = res.match[2]
+    rawKey = res.match[1]
 
     _recallProfileItem robot, res, user, rawKey
 
   # Pattern: `recall the <key> of <user>`
-  robot.respond /recall(\ )+the(\ )+(.*)(\ )+of(\ )+(\w+)/i, (res) ->
-    user = res.match[5]
-    rawKey = res.match[2]
+  robot.respond /recall[ ]+the[ ]+(.*)[ ]+of[ ]+(\w+)/i, (res) ->
+    rawKey = res.match[1]
+    user = res.match[2]
 
     _recallProfileItem robot, res, user, rawKey
