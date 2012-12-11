@@ -27,9 +27,10 @@ module.exports = (robot) ->
       | great
       | love
       | helpfull
-      | smater
+      | smarter
       | excellent
       | perfect
+      | wonderful
       ///i, (res) ->
         res.reply 'You are welcome'
 
@@ -37,6 +38,8 @@ module.exports = (robot) ->
     robot.respond ///stupid
       | uesless
       | bad
+      | asshole
+      | fuck
       ///i, (res) ->
         res.send 'Which are more supid? Human ro robots?'
 
