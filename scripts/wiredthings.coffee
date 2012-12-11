@@ -19,10 +19,12 @@
 # Author:
 #   wiredcraft
 
+Util = require 'util'
+
 # ## Listeners
 module.exports = (robot) ->
     # When someone praise.
-    robot.respond ///thank
+    robot.respond /// (thank
       | awesome
       | great
       | love
@@ -31,17 +33,20 @@ module.exports = (robot) ->
       | excellent
       | perfect
       | wonderful
-      ///i, (res) ->
+      ) ///i, (res) ->
+        word = res.match[1]
         res.reply 'You are welcome'
 
     # When someone blame.
-    robot.respond ///stupid
+    robot.respond /// (stupid
       | uesless
       | bad
       | asshole
       | fuck
-      ///i, (res) ->
-        res.send 'Which are more supid? Human ro robots?'
+      | suck
+      ) ///i, (res) ->
+        word = res.match[1]
+        res.send "Which is more #{word}? human ro robots?"
 
     # When someone leaving.
     robot.hear ///leave
@@ -77,7 +82,20 @@ module.exports = (robot) ->
                 res.reply 'Perfect time'
 
     # When someone was forget who is she/he. .
-    robot.respond /who am I/i, (res) ->
-        user = res.message.user.name
+    robot.respond /who[ ]+(is|are|am)[ ]+(\w+)/i, (res) ->
+        be = res.match[1]
+        name = res.match[2]
+        users = robot.brain.data.users
 
-        res.reply "eh?, u are #{user}, are user?"
+        switch be
+          when 'are' then res.reply "I am your friend, #{robot.name}."
+          when 'am' then res.reply "eh?, u are #{res.message.user.name}, are u?"
+          when 'is'
+            unless users[name]
+              res.reply "I dont know anything about #{name}."
+            unless users[name]['profile']
+              res.reply "#{name} has not profile"
+            else
+              res.send Util.inspect(users[name]['profile'], false, 4)
+
+        res.finish()
