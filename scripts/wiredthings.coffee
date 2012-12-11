@@ -24,7 +24,8 @@ Util = require 'util'
 # ## Listeners
 module.exports = (robot) ->
     # When someone praise.
-    robot.respond /// (thank
+    robot.respond ///
+      ( thank
       | awesome
       | great
       | love
@@ -32,37 +33,37 @@ module.exports = (robot) ->
       | smarter
       | excellent
       | perfect
-      | wonderful
-      ) ///i, (res) ->
-        word = res.match[1]
-        res.reply 'You are welcome'
+      | wonderful ) ///i, (res) ->
+      word = res.match[1]
+      res.reply 'You are welcome'
 
     # When someone blame.
-    robot.respond /// (stupid
+    robot.respond ///
+      ( stupid
       | useless
       | bad
       | asshole
       | fuck
-      | suck
-      ) ///i, (res) ->
-        word = res.match[1]
-        res.send "Which is more #{word}? human ro robots?"
+      | suck ) ///i, (res) ->
+      word = res.match[1]
+      res.send "Which is more #{word}? human ro robots?"
 
     # When someone leaving.
-    robot.hear ///leave
+    robot.hear ///
+      ( leave
       | leaving
       | bye
       | need[ ]+to[ ]+go
       | must[ ]+go
       | must[ ]+leave
-      | leave[ ]+earilier
-      ///i, (res) ->
-        hours = (new Date).getHours()
+      | leave[ ]+earilier ) ///i, (res) ->
+      word = res.match[1]
+      hours = (new Date).getHours()
 
-        if hours >= 18
-            res.reply 'Ok, your mom call you for dinner.'
-        else
-            res.reply 'Nooo, ronan will kill you!!!'
+      if hours >= 18
+        res.reply 'Ok, your mom call you for dinner.'
+      else
+        res.reply 'Nooo, ronan will kill you!!!'
 
     # When someone is hungry.
     robot.hear /^lunch/i, (res) ->
