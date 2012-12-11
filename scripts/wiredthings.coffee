@@ -1,7 +1,7 @@
-# Description
-#   What well happen if hubot heard something within wiredcraft
+# Description:
+#   What well happen if hubot heard something in wiredcraft
 #
-# Version
+# Version:
 #    0.1.0a
 #
 # Dependencies:

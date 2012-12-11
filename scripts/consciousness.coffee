@@ -1,7 +1,7 @@
-# Description
+# Description:
 #   What if hubot has its own consciousness?
 #
-#  Version
+#  Version:
 #    0.1.0a
 #
 # Dependencies:

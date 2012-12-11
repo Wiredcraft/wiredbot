@@ -8,7 +8,7 @@
 #   hubot when is lunch time - Lunch time.
 #   hubot where to go lunch - Alway to malatang.
 #
-# Author
+# Author:
 #   wiredcreaft
 
 # ## Restaurants
