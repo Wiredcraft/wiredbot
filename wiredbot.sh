@@ -4,7 +4,7 @@
 export PORT=9999
 export HUBOT_XMPP_USERNAME="wiredbot@chat.wiredcraft.com"
 export HUBOT_XMPP_PASSWORD=42
-export HUBOT_XMPP_ROOMS="hubot@conference.chat.wiredcraft.com"
+export HUBOT_XMPP_ROOMS="internal@conference.chat.wiredcraft.com,hubot@conference.chat.wiredcraft.com"
 export HUBOT_XMPP_HOST="chat.wiredcraft.com"
 export HUBOT_XMPP_PORT=5222
 export HUBOT_XMPP_LEGACYSSL=1

@@ -28,13 +28,35 @@ module.exports = (robot) ->
     robot.logger.error err
 
   client.on "connect", ->
-    robot.logger.debug "Successfully connected to Redis"
+    robot.logger.debug "Successfully connected to redis"
 
     client.get "hubot:storage", (err, reply) ->
       if err
         throw err
       else if reply
         robot.brain.mergeData JSON.parse(reply.toString())
+
+        # .
+        year = (new Date).getFullYear()
+        month = (new Date).getMonth()
+        day = (new Date).getDay()
+
+        today = "#{year}-#{month}-#{day}"
+
+        robot.logger.debug "Today is #{today}"
+
+        dailyEvents = {} unless robot.brain.data['dailyEvents']?
+
+        # Setup default daily event status
+        if not dailyEvents['date'] or dailyEvents['date'] isnt today
+          dailyEvents['date'] =
+            date: today
+            lunched: false
+        else
+          robot.logger.debug "The events of #{today} had already been setup"
+
+        # .
+        robot.brain.data['dailyEvents'] = dailyEvents
 
   robot.brain.on 'save', (data) ->
     client.set 'hubot:storage', JSON.stringify data

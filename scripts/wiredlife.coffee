@@ -25,20 +25,17 @@ RESTAURANTS = [
 
 # ## Listeners
 module.exports = (robot) ->
-  # ### Events
-  robot.brain.on 'save', (data) ->
-    # Lunch notification
-    day = (new Date).getDay()
-    hours = (new Date).getHours()
-
-    if day < 5 and 13 <= hours < 14
-        robot.send {}, "Lunch?"
-    else
-        # TODO
-
   # ### Respond
   # Randomly return a restaurant from the list
   robot.respond /where to go lunch/i, (res) ->
     res.send res.random RESTAURANTS
+
+    res.finish()
+
+  # Ramdomlu pick up on item for a given list
+  robot.respond /choose[ ]+one[ ]from[ ]+(.*)/i, (res) ->
+    list = res.match[1].split ' '
+
+    res.send res.random list
 
     res.finish()
