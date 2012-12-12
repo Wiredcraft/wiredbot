@@ -175,6 +175,20 @@ module.exports = (robot) ->
 
     _recallProfile robot, res, user
 
+  # Pattern: 'what is my <key>'
+  robot.respond /what[ ]+is[ ]+my(.*)/i, (res) ->
+    rawKey = res.match[1]
+    user = res.message.user.name
+
+    _recallProfileItem robot, res, user, rawKey
+
+  # Pattern: 'what is the <key> of <user>'
+  robot.respond /what[ ]+is[ ]+the[ ]+(.*)[ ]+of[ ]+(\w+)/i, (res) ->
+    rawKey = res.match[1]
+    user = res.match[2]
+
+    _recallProfileItem robot, res, user, rawKey
+
   # Pattern: `recall my <key>`
   robot.respond /recall[ ]+my(.*)/i, (res) ->
     user = res.message.user.name
