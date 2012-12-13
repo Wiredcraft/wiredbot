@@ -45,9 +45,7 @@ module.exports = (robot) ->
 
         robot.logger.debug "Today is #{today}"
 
-        robot.brain.data['dailyEvents'] = {}
-
-        dailyEvents = robot.brain.data['dailyEvents']
+        dailyEvents = robot.brain.data['dailyEvents'] or= {}
 
         # Setup default daily event status
         if not dailyEvents['date'] or dailyEvents['date'] isnt today

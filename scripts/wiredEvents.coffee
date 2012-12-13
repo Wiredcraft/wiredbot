@@ -19,7 +19,7 @@
 module.exports = (robot) ->
     # .
     robot.brain.on 'save', (data) ->
-        dailyEvents = robot.brain.data['dailyEvents']
+        dailyEvents = robot.brain.data['dailyEvents'] or= {}
 
         # .
         year = (new Date).getFullYear()
@@ -28,8 +28,9 @@ module.exports = (robot) ->
         hours = (new Date).getHours()
 
         today = "#{year}-#{month}-#{day}"
+        console.log today
 
-        if dailyEvents? and dailyEvents['date'] is today
+        if dailyEvents['date'] is today
             unless dailyEvents['lunched']
                 if day < 5 and 13 <= hours < 14
                   robot.messageRoom("internal@conference.chat.wiredcraft.com", 'lunch?')
