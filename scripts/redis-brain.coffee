@@ -45,11 +45,11 @@ module.exports = (robot) ->
 
         robot.logger.debug "Today is #{today}"
 
-        dailyEvents = {} unless robot.brain.data['dailyEvents']?
+        dailyEvents = robot.brain.data['dailyEvents'] or= {}
 
         # Setup default daily event status
         if not dailyEvents['date'] or dailyEvents['date'] isnt today
-          dailyEvents['date'] =
+          dailyEvents =
             date: today
             lunched: false
         else

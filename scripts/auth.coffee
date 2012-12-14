@@ -32,7 +32,7 @@ module.exports = (robot) ->
       user = robot.userForName(name)
       if user? and user.roles?
         if role in user.roles then return true
-      
+
       return false
 
   robot.Auth = new Auth
