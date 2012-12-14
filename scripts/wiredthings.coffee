@@ -44,7 +44,8 @@ module.exports = (robot) ->
       | bad
       | asshole
       | fuck
-      | suck ) ///i, (res) ->
+      | suck
+      | shut[ ]+up) ///i, (res) ->
       word = res.match[1]
       res.send "Which is more #{word}? human ro robots?"
 

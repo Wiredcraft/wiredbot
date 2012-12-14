@@ -34,6 +34,8 @@ module.exports = (robot) ->
             unless dailyEvents['lunched']
                 if day < 5 and 13 <= hours < 14
                   robot.messageRoom("internal@conference.chat.wiredcraft.com", 'lunch?')
+                else
+                  robot.messageRoom("internal@conference.chat.wiredcraft.com", "not hungry?")
         else
             robot.logger.debug "Today is #{today}"
 
@@ -48,4 +50,3 @@ module.exports = (robot) ->
         res.send "Have a good time"
 
         res.finish()
-
